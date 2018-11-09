@@ -1,4 +1,5 @@
 import random
+import tkinter as tk
 
 ### Partie A1 ###
 
@@ -46,8 +47,35 @@ def piocheCarte(p, x=1):
 
 ### Partie A2 ###
 
-### Fonctions Graphiques ###
+############################
+### FONCTIONS GRAPHIQUES ###
+############################
 
+#----------Section Boutons----------#
+
+def splitter():
+    """Action servant à splitter deux cartes identiques."""
+    pass
+
+def rester():
+    """Permet au joueur d'arreter son tour."""
+    pass
+
+def tirer():
+    """Permet au joueur de tirer une carte."""
+    pass
+
+def doubler():
+    """Permet au joueur de doubler sa mise et tirer une unique carte."""
+    pass
+
+def creerBoutons(main, can):
+    """Creer les boutons permettant au joueur d'interagir."""
+    bouton_splitter = tk.Button(main, text='Splitter', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=splitter)
+    bouton_splitter_win = can.create_window(10, 500, anchor=tk.SW, window=bouton_splitter)
+
+#----------Section Cartes-----------#
+    
 def associerCartes(cartes):
     """Associe chaque carte d'un paquet donné à son image sur l'application graphique."""
     association = {} #Initialisation du dictionnaire d'association
@@ -63,8 +91,17 @@ def trouverCarte(association, carte):
     """Trouve l'image d'une carte donnée dans une association carte/image."""
     return association[carte]
 
-## Brouillons et tests de Flo ##
-##paquet = paquet()
-##association = associerCartes(paquet)
-##print(trouverCarte(association, paquet[17]))
-        
+### Programme principal (brouillon et tests pour l'instant) ###
+
+def main_prog():
+    main = tk.Tk()
+    main.title('Jeu de blackjack') #Creation de la fenetre
+    main.geometry('1380x720+0+0')
+    main.resizable(height=False,width=False)
+    table = tk.PhotoImage(file='Images/BackgroundTemporaire.gif') #Importation de l'arriere-plan
+    fond = tk.Canvas(main, height=table.height(), width=table.width(), bg='black') #Creation du canvas allant accueillir l'interface graphique
+    fond.pack()
+    fond.create_image(0,0,anchor = tk.NW, image=table) #Image d'arriere-plan
+    creerBoutons(main, fond)
+    main.mainloop()
+
