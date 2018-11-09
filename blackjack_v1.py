@@ -21,8 +21,7 @@ def valeurCarte(carte):
     elif ('valet' in carte) or ('dame' in carte) or ('roi' in carte):
         valeur = 10 #Valeur des têtes
     else:
-        liste = carte.split(' ')
-        valeur = str(liste[0]) #Valeur des autres cartes
+        valeur = str(carte.split(' ')[0]) #Valeur des autres cartes
     return valeur
 
 def initPioche(n):
