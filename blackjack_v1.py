@@ -51,7 +51,56 @@ def piocheCarte(p, x=1):
 ### FONCTIONS GRAPHIQUES ###
 ############################
 
+#----------Section Menu-------------#
+
+def nouvelle_partie(main, can, menu):
+    """Lance une nouvelle partie de Blackjack"""
+    for widget in main.winfo_children():
+        if widget.winfo_class() == 'Button' :
+            tk.Button.destroy(widget)
+    can.delete(main, menu)
+    creerBoutons(main, can)
+
+def reprendre_partie(main, can, menu):
+    """Reprend la partie interrompue"""
+    for widget in main.winfo_children():
+        if widget.winfo_class() == 'Button' :
+            tk.Button.destroy(widget)
+    can.delete(main, menu)
+    creerBoutons(main, can)
+
+def menu_depart(main, can, resume=True):
+    """Affiche le menu au demarrage du jeu"""
+    #Suppression des boutons de partie
+    for widget in main.winfo_children():
+        if widget.winfo_class() == 'Button' :
+            tk.Button.destroy(widget)
+    
+    #Fond noirci du menu
+    menu = can.create_rectangle(0,0,1000,1000,width=1,fill="black",stipple="gray75")
+
+    #Bouton quitter
+    bouton_quitter = tk.Button(main, text='Quitter', bg='black', fg='yellow', activebackground='yellow', activeforeground='black', command=main.destroy)
+    bouton_quitter_win = can.create_window(400, 350, window=bouton_quitter)
+
+    #Bouton nouvelle partie
+    bouton_nouvelle_partie = tk.Button(main, text='Nouvelle Partie', bg='black', fg='yellow', activebackground='yellow', activeforeground='black',
+                                       command=lambda:nouvelle_partie(main,can,menu))
+    bouton_nouvelle_partie_win = can.create_window(400, 250, window=bouton_nouvelle_partie)
+
+    #Bouton reprendre partie
+    bouton_reprendre = tk.Button(main, text='Reprendre', bg='black', fg='yellow', activebackground='yellow', activeforeground='black',
+                                       command=lambda:nouvelle_partie(main,can,menu))
+    bouton_reprendre_win = can.create_window(400, 150, window=bouton_reprendre)
+
+    if not resume :
+        bouton_reprendre.config(state=tk.DISABLED) #Desactive le bouton reprendre au demarrage du jeu
+
 #----------Section Boutons----------#
+
+def resume():
+    """Affiche le menu de départ"""
+    pass
 
 def splitter():
     """Action servant à splitter deux cartes identiques."""
@@ -71,8 +120,29 @@ def doubler():
 
 def creerBoutons(main, can):
     """Creer les boutons permettant au joueur d'interagir."""
+    k = 160 #Ecart des boutons
+    y = 550 #Hauteur des boutons
+    
+    #Bouton splitter
     bouton_splitter = tk.Button(main, text='Splitter', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=splitter)
-    bouton_splitter_win = can.create_window(10, 500, anchor=tk.SW, window=bouton_splitter)
+    bouton_splitter_win = can.create_window(k, y, window=bouton_splitter)
+
+    #Bouton rester
+    bouton_rester = tk.Button(main, text='Rester', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=rester)
+    bouton_rester_win = can.create_window(2*k, y, window=bouton_rester)
+
+    #Bouton tirer
+    bouton_tirer = tk.Button(main, text='Tirer', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=tirer)
+    bouton_tirer_win = can.create_window(3*k, y, window=bouton_tirer)
+
+    #Bouton doubler
+    bouton_doubler = tk.Button(main, text='Doubler', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=doubler)
+    bouton_doubler_win = can.create_window(4*k, y, window=bouton_doubler)
+
+    #Bouton menu
+    bouton_menu = tk.Button(main, text='Menu', bg='black', fg='yellow', activebackground='yellow', activeforeground='black',
+                            command=lambda:menu_depart(main,can))
+    bouton_menu_win = can.create_window(30, 20, window=bouton_menu)
 
 #----------Section Cartes-----------#
     
@@ -96,12 +166,17 @@ def trouverCarte(association, carte):
 def main_prog():
     main = tk.Tk()
     main.title('Jeu de blackjack') #Creation de la fenetre
-    main.geometry('1380x720+0+0')
+    main.geometry('1380x720+0+0') 
+    main.attributes('-fullscreen', 1)
     main.resizable(height=False,width=False)
+    
     table = tk.PhotoImage(file='Images/BackgroundTemporaire.gif') #Importation de l'arriere-plan
     fond = tk.Canvas(main, height=table.height(), width=table.width(), bg='black') #Creation du canvas allant accueillir l'interface graphique
     fond.pack()
     fond.create_image(0,0,anchor = tk.NW, image=table) #Image d'arriere-plan
-    creerBoutons(main, fond)
+
+    menu_depart(main,fond,resume=False)
+    
     main.mainloop()
 
+main_prog()
