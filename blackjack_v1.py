@@ -1,6 +1,7 @@
 import random
 import sys
 import tkinter as tk
+import time
 
 ### Partie A1 ###
 
@@ -17,13 +18,13 @@ def paquet():
 def valeurCarte(carte):
     """Pour une carte donnée, renvoie sa valeur en points."""
     if 'as' in carte :
-        valeur = 0 #Inisialisation de la variable
+        valeur = 11 #Inisialisation de la variable
         while valeur!=1 and valeur!=11:
             valeur = int(input('1 ou 11 ?')) #Choix de la valeur de l'As
     elif ('valet' in carte) or ('dame' in carte) or ('roi' in carte):
         valeur = 10 #Valeur des têtes
     else:
-        valeur = str(carte.split(' ')[0]) #Valeur des autres cartes
+        valeur = int(str(carte.split(' ')[0])) #Valeur des autres cartes
     return valeur
 
 def initPioche(n):
@@ -48,21 +49,11 @@ def piocheCarte(p, x=1):
     return cartesPiochees
 
 ### Partie A2 ###
-
+    
 def initJoueurs(n):
     liste_joueurs = []
     for i in range(n):
-        ask = tk.Tk() #Cree une fenetre demandant le nom du joueur
-
-        question = tk.Label(ask, text='Nom du joueur '+str(i+1)+' : ')
-        question.pack()
-        
-        nom = tk.StringVar()
-        entree_nom = tk.Entry(ask, textvariable=nom)
-        entree_nom.pack()
-
-        bouton_valider = tk.Button(ask, text='Valider', command=lambda:liste_joueurs.append(entree_nom.Get()))
-        bouton_valider.pack()
+        liste_joueurs.append('joueur'+str(n+1))
         
     return liste_joueurs
 
@@ -91,11 +82,6 @@ def gagnants(scores):
         if scores[joueur] == maxi:
             gagnants.append(joueur)
     return gagnants
-
-def partie():
-    liste_joueurs = initJoueurs(5)
-    pioche = initPioche(5)
-    scores = premierTour(liste_joueurs, pioche)
     
 ############################
 ### FONCTIONS GRAPHIQUES ###
@@ -229,7 +215,7 @@ def main_prog():
     fond.create_image(0,0,anchor=tk.NW,image=table) #Image d'arriere-plan
 
     menu(main,fond,resume=False)
-    
     main.mainloop()
+    
 
 main_prog()
