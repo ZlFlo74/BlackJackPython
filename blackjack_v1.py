@@ -36,6 +36,7 @@ def initPioche(n):
         carte = random.choice(pioche_non_melangees)
         pioche.append(carte) #Ajoute une carte aléatoire dans la pioche mélangée
         pioche_non_melangees.remove(carte) #Et la retire de la pioche à mélanger
+    return pioche
 
 def piocheCarte(p, x=1):
     """Recoit en argument la pioche, et le nombre de cartes à piocher (par
@@ -48,6 +49,53 @@ def piocheCarte(p, x=1):
 
 ### Partie A2 ###
 
+def initJoueurs(n):
+    liste_joueurs = []
+    for i in range(n):
+        ask = tk.Tk() #Cree une fenetre demandant le nom du joueur
+
+        question = tk.Label(ask, text='Nom du joueur '+str(i+1)+' : ')
+        question.pack()
+        
+        nom = tk.StringVar()
+        entree_nom = tk.Entry(ask, textvariable=nom)
+        entree_nom.pack()
+
+        bouton_valider = tk.Button(ask, text='Valider', command=lambda:liste_joueurs.append(entree_nom.Get()))
+        bouton_valider.pack()
+        
+    return liste_joueurs
+
+def initScores(joueurs,v=0):
+    scores = {}
+    for joueur in joueurs :
+        scores[joueur] = v
+    return scores
+
+def premierTour(joueurs):
+    scores = initScores(joueurs)
+    pioche = initPioche(len(joueurs))
+    for joueur in joueurs:
+        cartes_piochees = piocheCarte(pioche,x=2)
+        for carte in cartes_piochees :
+            scores[joueur] += valeurCarte(carte)
+    return scores
+
+def gagnants(scores):
+    maxi = 0
+    gagnants = []
+    for joueur in scores.keys() :
+        if scores[joueur] <=21 and scores[joueur]>maxi:
+            maxi = scores[joueur]
+            gagnants = []
+            gagnants.append(joueur)
+        if scores[joueur] == maxi:
+            gagnants.append(joueur)
+    return gagnants
+
+def partie():
+    pass
+    
 ############################
 ### FONCTIONS GRAPHIQUES ###
 ############################
@@ -70,7 +118,7 @@ def reprendre_partie(main, can, menu):
     can.delete(main, menu)
     creerBoutons(main, can)
 
-def menu_depart(main, can, resume=True):
+def prog(main, can, resume=True):
     """Affiche le menu au demarrage du jeu"""
     #Suppression des boutons de partie
     for widget in main.winfo_children():
@@ -97,6 +145,8 @@ def menu_depart(main, can, resume=True):
     if not resume :
         bouton_reprendre.config(state=tk.DISABLED) #Desactive le bouton reprendre au demarrage du jeu
 
+    joueurs = initJoueurs(4)
+
 #----------Section Boutons----------#
 
 def splitter():
@@ -121,8 +171,8 @@ def creerBoutons(main, can):
     y = 550 #Hauteur des boutons
     
     #Bouton splitter
-    bouton_splitter = tk.Button(main, text='Splitter', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=splitter)
-    bouton_splitter_win = can.create_window(k, y, window=bouton_splitter)
+    #bouton_splitter = tk.Button(main, text='Splitter', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=splitter)
+    #bouton_splitter_win = can.create_window(k, y, window=bouton_splitter)
 
     #Bouton rester
     bouton_rester = tk.Button(main, text='Rester', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=rester)
@@ -133,12 +183,12 @@ def creerBoutons(main, can):
     bouton_tirer_win = can.create_window(3*k, y, window=bouton_tirer)
 
     #Bouton doubler
-    bouton_doubler = tk.Button(main, text='Doubler', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=doubler)
-    bouton_doubler_win = can.create_window(4*k, y, window=bouton_doubler)
+    #bouton_doubler = tk.Button(main, text='Doubler', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=doubler)
+    #bouton_doubler_win = can.create_window(4*k, y, window=bouton_doubler)
 
     #Bouton menu
     bouton_menu = tk.Button(main, text='Menu', bg='black', fg='yellow', activebackground='yellow', activeforeground='black',
-                            command=lambda:menu_depart(main,can))
+                            command=lambda:prog(main,can))
     bouton_menu_win = can.create_window(30, 20, window=bouton_menu)
 
 #----------Section Cartes-----------#
@@ -160,6 +210,9 @@ def trouverCarte(association, carte):
 
 ### Programme principal (brouillon et tests pour l'instant) ###
 
+def prog_script():
+    pass
+
 def main_prog():
     main = tk.Tk()
     main.title('Jeu de blackjack') #Creation de la fenetre
@@ -172,7 +225,7 @@ def main_prog():
     fond.pack()
     fond.create_image(0,0,anchor = tk.NW, image=table) #Image d'arriere-plan
 
-    menu_depart(main,fond,resume=False)
+    prog(main,fond,resume=False)
     
     main.mainloop()
 
