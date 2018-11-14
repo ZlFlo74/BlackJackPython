@@ -1,4 +1,5 @@
 import random
+import sys
 import tkinter as tk
 
 ### Partie A1 ###
@@ -80,7 +81,7 @@ def menu_depart(main, can, resume=True):
     menu = can.create_rectangle(0,0,1000,1000,width=1,fill="black",stipple="gray75")
 
     #Bouton quitter
-    bouton_quitter = tk.Button(main, text='Quitter', bg='black', fg='yellow', activebackground='yellow', activeforeground='black', command=main.destroy)
+    bouton_quitter = tk.Button(main, text='Quitter', bg='black', fg='yellow', activebackground='yellow', activeforeground='black', command=lambda:sys.exit(0))
     bouton_quitter_win = can.create_window(400, 350, window=bouton_quitter)
 
     #Bouton nouvelle partie
@@ -97,10 +98,6 @@ def menu_depart(main, can, resume=True):
         bouton_reprendre.config(state=tk.DISABLED) #Desactive le bouton reprendre au demarrage du jeu
 
 #----------Section Boutons----------#
-
-def resume():
-    """Affiche le menu de départ"""
-    pass
 
 def splitter():
     """Action servant à splitter deux cartes identiques."""
