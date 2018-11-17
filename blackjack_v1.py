@@ -19,15 +19,13 @@ def valeurCarte(carte):
     """Pour une carte donnée, renvoie sa valeur en points."""
     if 'as' in carte :
         valeur = 11 #Inisialisation de la variable
-        while valeur!=1 and valeur!=11:
-            valeur = int(input('1 ou 11 ?')) #Choix de la valeur de l'As
     elif ('valet' in carte) or ('dame' in carte) or ('roi' in carte):
         valeur = 10 #Valeur des têtes
     else:
         valeur = int(str(carte.split(' ')[0])) #Valeur des autres cartes
     return valeur
 
-def initPioche(n):
+def initPioche(n=8):
     """Prend un nombre de paquets egal au nombre de joueurs puis melange
     les cartes pour creer la pioche."""
     pioche_non_melangees = n*paquet()
@@ -46,15 +44,17 @@ def piocheCarte(p, x=1):
     cartesPiochees = []
     for i in range(x):
         cartesPiochees.append(p.pop(0)) #Tire une carte de la pioche
-    return cartesPiochees
+    if x==1:
+        return cartesPiochees[0]
+    else :
+        return cartesPiochees
 
 ### Partie A2 ###
     
-def initJoueurs(n):
+def initJoueurs(n=5):
     liste_joueurs = []
     for i in range(n):
         liste_joueurs.append('joueur'+str(n+1))
-        
     return liste_joueurs
 
 def initScores(joueurs,v=0):
@@ -82,6 +82,38 @@ def gagnants(scores):
         if scores[joueur] == maxi:
             gagnants.append(joueur)
     return gagnants
+
+### Partie B1 ###
+
+def continuer():
+    global continuer
+    continuer = 2
+    while continuer!=0 and continuer!=1:
+        pass
+    if continuer == 0:
+        return False
+    else:
+        return True
+
+def tourJoueur(j, scores, pioche):
+    while scores[j]<21 and continuer():
+        scores[j] += valeurCarte(piocheCarte(pioche))
+    return scores
+
+### Partie B2 ###
+
+def tourComplet(joueurs, scores, pioche):
+    for j in joueurs:
+        scores = tourJoueur(j, scores, pioche)
+    return scores
+
+def partieComplete():
+    joueurs = initJoueurs()
+    scores = initScores(joueurs)
+    pioche = initPioche()
+    scores = tourComplet(joueurs, scores, pioche)
+    gagnants = gagnants(score)
+    return gagnants 
     
 ############################
 ### FONCTIONS GRAPHIQUES ###
@@ -89,13 +121,39 @@ def gagnants(scores):
 
 #----------Section Menu-------------#
 
+   #----------------------------------#
+def valider_nb(var_entree):
+    global nb_joueurs
+    nb_joueurs = var_entree.get()
+
 def nouvelle_partie(main, can, menu):
     """Lance une nouvelle partie de Blackjack"""
+    global nb_joueurs
+    nb_joueurs = 0
     for widget in main.winfo_children():
         if widget.winfo_class() == 'Button' :
             tk.Button.destroy(widget)
+
+    #Fenetre d'initialisation des joueurs
+    ask_joueurs = tk.Tk()
+    ask_joueurs.overrideredirect(1)
+    ask_joueurs.geometry('100x100+600+300')
+    ask_joueurs.title('Initialisation des joueurs')
+    ask_joueurs.wm_attributes("-topmost", 1)
+
+    #Entree du nombre de joueurs
+    entree_nb = tk.IntVar()
+    entree_nb_joueurs = tk.Entry(ask_joueurs, textvariable=entree_nb)
+    entree_nb_joueurs.pack()
+
+    #Bouton valider le nombre de joueur
+    bouton_valider_nb = tk.Button(ask_joueurs, text='Valider', command=lambda:valider_nb(entree_nb))
+    bouton_valider_nb.pack()
+    
     can.delete(main, menu)
     creerBoutons(main, can)
+
+   #----------------------------------#
 
 def reprendre_partie(main, can, menu):
     """Reprend la partie interrompue"""
@@ -143,11 +201,13 @@ def splitter():
 
 def rester():
     """Permet au joueur d'arreter son tour."""
-    pass
+    global continuer
+    continuer = 0
 
 def tirer():
     """Permet au joueur de tirer une carte."""
-    pass
+    global continuer
+    continuer = 1
 
 def doubler():
     """Permet au joueur de doubler sa mise et tirer une unique carte."""
@@ -159,8 +219,8 @@ def creerBoutons(main, can):
     y = main.winfo_screenheight()-30 #Hauteur des boutons
     
     #Bouton splitter
-    #bouton_splitter = tk.Button(main, text='Splitter', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=splitter)
-    #bouton_splitter_win = can.create_window(k, y, window=bouton_splitter)
+    bouton_splitter = tk.Button(main, text='Splitter', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=splitter)
+    bouton_splitter_win = can.create_window(k, y, window=bouton_splitter)
 
     #Bouton rester
     bouton_rester = tk.Button(main, text='Rester', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=rester)
@@ -171,8 +231,8 @@ def creerBoutons(main, can):
     bouton_tirer_win = can.create_window(3*k, y, window=bouton_tirer)
 
     #Bouton doubler
-    #bouton_doubler = tk.Button(main, text='Doubler', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=doubler)
-    #bouton_doubler_win = can.create_window(4*k, y, window=bouton_doubler)
+    bouton_doubler = tk.Button(main, text='Doubler', bg='blue', fg='white', activebackground='white', activeforeground='blue', command=doubler)
+    bouton_doubler_win = can.create_window(4*k, y, window=bouton_doubler)
 
     #Bouton menu
     bouton_menu = tk.Button(main, text='Menu', bg='black', fg='yellow', activebackground='yellow', activeforeground='black',
@@ -198,14 +258,11 @@ def trouverCarte(association, carte):
 
 ### Programme principal (brouillon et tests pour l'instant) ###
 
-def prog_script():
-    pass
-
 def main_prog():
     main = tk.Tk()
     w = main.winfo_screenwidth() #Largeur de l'ecran
     h = main.winfo_screenheight() #Hauteur de l'ecran
-    main.title('Jeu de blackjack') #Creation de la fenetre 
+    main.title('Jeu de blackjack') #Creation de la fenetre
     main.attributes('-fullscreen', 1)
     main.resizable(height=False,width=False)
     
@@ -215,6 +272,7 @@ def main_prog():
     fond.create_image(0,0,anchor=tk.NW,image=table) #Image d'arriere-plan
 
     menu(main,fond,resume=False)
+    
     main.mainloop()
     
 
