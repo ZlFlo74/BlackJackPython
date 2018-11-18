@@ -51,10 +51,82 @@ def piocheCarte(p, x=1):
 
 ### Partie A2 ###
     
-def initJoueurs(n=5):
+def initJoueurs():
     liste_joueurs = []
-    for i in range(n):
-        liste_joueurs.append('joueur'+str(n+1))
+    global nb_joueurs
+    nb_joueurs = 0
+
+    #Fenetre d'initialisation des joueurs
+    ask_joueurs = tk.Tk()
+    ask_joueurs.overrideredirect(1)
+    ask_joueurs.geometry('200x300+600+200')
+    ask_joueurs.title('Initialisation des joueurs')
+    ask_joueurs.wm_attributes("-topmost", 1)
+
+    #Etiquette nombre joueurs
+    label_nb_joueurs = tk.Label(ask_joueurs, text='Nombre de joueurs :')
+    label_nb_joueurs.pack()
+
+    #Entree du nombre de joueurs
+    entree_nb = tk.IntVar()
+    entree_nb_joueurs = tk.Entry(ask_joueurs, textvariable=entree_nb)
+    entree_nb_joueurs.pack()
+
+    #Bouton valider le nombre de joueur
+    bouton_valider_nb = tk.Button(ask_joueurs, text='Valider', command=lambda:valider_nb(ask_joueurs, entree_nb))
+    bouton_valider_nb.pack()
+
+    #Etiquette joueur 1
+    label_joueur1 = tk.Label(ask_joueurs, text='Joueur 1 :')
+    label_joueur1.pack()
+
+    #Entree joueur 1
+    joueur1 = tk.StringVar()
+    entree_joueur1 = tk.Entry(ask_joueurs, textvariable=joueur1, state='disabled')
+    entree_joueur1.pack()
+
+    #Etiquette joueur 2
+    label_joueur2 = tk.Label(ask_joueurs, text='Joueur 2 :')
+    label_joueur2.pack()
+
+    #Entree joueur 2
+    joueur2 = tk.StringVar()
+    entree_joueur2 = tk.Entry(ask_joueurs, textvariable=joueur2, state='disabled')
+    entree_joueur2.pack()
+
+    #Etiquette joueur 3
+    label_joueur3 = tk.Label(ask_joueurs, text='Joueur 3 :')
+    label_joueur3.pack()
+
+    #Entree joueur 3
+    joueur3 = tk.StringVar()
+    entree_joueur3 = tk.Entry(ask_joueurs, textvariable=joueur3, state='disabled')
+    entree_joueur3.pack()
+
+    #Etiquette joueur 4
+    label_joueur4 = tk.Label(ask_joueurs, text='Joueur 4 :')
+    label_joueur4.pack()
+
+    #Entree joueur 4
+    joueur4 = tk.StringVar()
+    entree_joueur4 = tk.Entry(ask_joueurs, textvariable=joueur4, state='disabled')
+    entree_joueur4.pack()
+
+    #Etiquette joueur 5
+    label_joueur5 = tk.Label(ask_joueurs, text='Joueur 5 :')
+    label_joueur5.pack()
+
+    #Entree joueur 5
+    joueur5 = tk.StringVar()
+    entree_joueur5 = tk.Entry(ask_joueurs, textvariable=joueur5, state='disabled')
+    entree_joueur5.pack()
+
+    #Bouton valider joueurs
+    bouton_valider_joueurs = tk.Button(ask_joueurs, text='Valider', command=valider_joueurs)
+    bouton_valider_joueurs.pack()
+
+    ask_joueurs.mainloop()
+    
     return liste_joueurs
 
 def initScores(joueurs,v=0):
@@ -87,7 +159,7 @@ def gagnants(scores):
 
 def continuer():
     global continuer
-    continuer = 2
+    continuer = -1
     while continuer!=0 and continuer!=1:
         pass
     if continuer == 0:
@@ -122,34 +194,26 @@ def partieComplete():
 #----------Section Menu-------------#
 
    #----------------------------------#
-def valider_nb(var_entree):
+def valider_nb(fenetre, var_entree):
     global nb_joueurs
     nb_joueurs = var_entree.get()
+    i = 0
+    for widget in fenetre.winfo_children() :
+        if widget.winfo_class() == 'Entry' :
+            if i > 0 and i <= nb_joueurs:
+                widget.config(state='normal')
+            i += 1
 
+def valider_joueurs():
+    pass
+ 
 def nouvelle_partie(main, can, menu):
     """Lance une nouvelle partie de Blackjack"""
-    global nb_joueurs
-    nb_joueurs = 0
     for widget in main.winfo_children():
         if widget.winfo_class() == 'Button' :
             tk.Button.destroy(widget)
 
-    #Fenetre d'initialisation des joueurs
-    ask_joueurs = tk.Tk()
-    ask_joueurs.overrideredirect(1)
-    ask_joueurs.geometry('100x100+600+300')
-    ask_joueurs.title('Initialisation des joueurs')
-    ask_joueurs.wm_attributes("-topmost", 1)
-
-    #Entree du nombre de joueurs
-    entree_nb = tk.IntVar()
-    entree_nb_joueurs = tk.Entry(ask_joueurs, textvariable=entree_nb)
-    entree_nb_joueurs.pack()
-
-    #Bouton valider le nombre de joueur
-    bouton_valider_nb = tk.Button(ask_joueurs, text='Valider', command=lambda:valider_nb(entree_nb))
-    bouton_valider_nb.pack()
-    
+    joueurs = initJoueurs()
     can.delete(main, menu)
     creerBoutons(main, can)
 
@@ -191,7 +255,7 @@ def menu(main, can, resume=True):
     bouton_reprendre_win = can.create_window(w/2, h/2, window=bouton_reprendre)
 
     if not resume :
-        bouton_reprendre.config(state=tk.DISABLED) #Desactive le bouton reprendre au demarrage du jeu
+        bouton_reprendre.config(state='disabled') #Desactive le bouton reprendre au demarrage du jeu
 
 #----------Section Boutons----------#
 
