@@ -73,7 +73,7 @@ def initJoueurs():
     entree_nb_joueurs.pack()
 
     #Bouton valider le nombre de joueur
-    bouton_valider_nb = tk.Button(ask_joueurs, text='Valider', command=lambda:valider_nb(ask_joueurs, entree_nb))
+    bouton_valider_nb = tk.Button(ask_joueurs, text='Valider', command=lambda:valider_nb(ask_joueurs, entree_nb_joueurs))
     bouton_valider_nb.pack()
 
     #Etiquette joueur 1
@@ -82,6 +82,7 @@ def initJoueurs():
 
     #Entree joueur 1
     joueur1 = tk.StringVar()
+    joueur1.set('Joueur 1')
     entree_joueur1 = tk.Entry(ask_joueurs, textvariable=joueur1, state='disabled')
     entree_joueur1.pack()
 
@@ -91,6 +92,7 @@ def initJoueurs():
 
     #Entree joueur 2
     joueur2 = tk.StringVar()
+    joueur2.set('Joueur 2')
     entree_joueur2 = tk.Entry(ask_joueurs, textvariable=joueur2, state='disabled')
     entree_joueur2.pack()
 
@@ -100,6 +102,7 @@ def initJoueurs():
 
     #Entree joueur 3
     joueur3 = tk.StringVar()
+    joueur3.set('Joueur 3')
     entree_joueur3 = tk.Entry(ask_joueurs, textvariable=joueur3, state='disabled')
     entree_joueur3.pack()
 
@@ -109,6 +112,7 @@ def initJoueurs():
 
     #Entree joueur 4
     joueur4 = tk.StringVar()
+    joueur4.set('Joueur 4')
     entree_joueur4 = tk.Entry(ask_joueurs, textvariable=joueur4, state='disabled')
     entree_joueur4.pack()
 
@@ -118,11 +122,13 @@ def initJoueurs():
 
     #Entree joueur 5
     joueur5 = tk.StringVar()
+    joueur5.set('Joueur 5')
     entree_joueur5 = tk.Entry(ask_joueurs, textvariable=joueur5, state='disabled')
     entree_joueur5.pack()
 
     #Bouton valider joueurs
-    bouton_valider_joueurs = tk.Button(ask_joueurs, text='Valider', command=valider_joueurs)
+    bouton_valider_joueurs = tk.Button(ask_joueurs, text='Valider', command=lambda:valider_joueurs(ask_joueurs,liste_joueurs,entree_joueur1,entree_joueur2
+                                                                                                   ,entree_joueur3,entree_joueur4,entree_joueur5))
     bouton_valider_joueurs.pack()
 
     ask_joueurs.mainloop()
@@ -194,9 +200,9 @@ def partieComplete():
 #----------Section Menu-------------#
 
    #----------------------------------#
-def valider_nb(fenetre, var_entree):
+def valider_nb(fenetre, entree):
     global nb_joueurs
-    nb_joueurs = var_entree.get()
+    nb_joueurs = int(entree.get())
     i = 0
     for widget in fenetre.winfo_children() :
         if widget.winfo_class() == 'Entry' :
@@ -204,8 +210,14 @@ def valider_nb(fenetre, var_entree):
                 widget.config(state='normal')
             i += 1
 
-def valider_joueurs():
-    pass
+def valider_joueurs(fenetre,liste,entree1,entree2,entree3,entree4,entree5):
+    liste.append(entree1.get())
+    liste.append(entree2.get())
+    liste.append(entree3.get())
+    liste.append(entree4.get())
+    liste.append(entree5.get())
+    fenetre.destroy()
+    can.delete(main, menu)
  
 def nouvelle_partie(main, can, menu):
     """Lance une nouvelle partie de Blackjack"""
@@ -213,7 +225,7 @@ def nouvelle_partie(main, can, menu):
         if widget.winfo_class() == 'Button' :
             tk.Button.destroy(widget)
 
-    joueurs = initJoueurs()
+    gagnants = partieComplete()
     can.delete(main, menu)
     creerBoutons(main, can)
 
