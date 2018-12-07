@@ -41,7 +41,7 @@ def piocheCarte(p, x=1):
     retirant)."""
     cartesPiochees = []
     for i in range(x):
-        cartesPiochees.append(p.pop(0))
+        cartesPiochees.append(p)
     return cartesPiochees
 
 #Partie A2
@@ -61,11 +61,25 @@ def initScores(joueurs,v=0):
         scores[joueur] = v
     return scores
 
+#def mise_init(joueurs):
+    #"""On créer un dictionnaire dans lequel on stock toute les mise de chaque joueur"""
+    #mise_initial= int(input("Entrez la mise initial de chaaque joueur"))
+    #mise = {}
+    #for joueur in joueurs:
+        #mise[joueur]= mise_initial
+    #return mise
+
+
 def premierTour(pioche,joueurs):
     """Simule le premier tour de la partie"""
     scores = initScores(joueurs)
+    #mise = mise_init(joueurs)
     for joueur in joueurs :
         cartes_piochees = piocheCarte(pioche,x=2)
+        #la_mise = int(input("Entrez votre mise"))
+       # mise_initial = mise[joueur]
+        #mise[joueur] = mise_initial - la_mise
+        #mise_initial = mise[joueur]
         for carte in cartes_piochees :
             scores[joueur] += valeurCarte(carte)
     return scores
@@ -91,7 +105,7 @@ def continuer():
     else :
         return False
 
-def tourJoueur(joueurs,j,tour,scores,pioche):
+def tourJoueur(joueurs,j,tour,scores,pioche,mise):
     print('Tour '+str(tour))
     print(j)
     print('Votre score : '+str(scores[j]))
@@ -124,3 +138,9 @@ def partieComplete(joueurs,nb_victoires):
         tourComplet(joueurs_en_jeu,tour,scores,pioche)
     gagnant = gagnant(joueurs)
     
+
+
+#main
+
+joueurs = ['rachid','mouloud']
+partieComplete(joueurs,1)
